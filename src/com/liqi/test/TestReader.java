@@ -23,7 +23,7 @@ public class TestReader extends TestCase{
 		TissuSpecificGeneExpressionReader reader = new TissuSpecificGeneExpressionReader(filename);
 		reader.read();
 		
-		Map<String, TissueSpecificGeneExpression> tsGeneExpMap = reader.getTsGeneExpressionMap();
+		Map<String, TissueSpecificGeneExpression> tsGeneExpMap = reader.getTissueSpecificGeneExpressionMap();
 		Map<String, Tissue> tissueMap = reader.getTissueMap();
 		
 		String tissueFilename = "E:/2013疾病研究/疾病数据/TissueS_geneExpression/tissue.txt";

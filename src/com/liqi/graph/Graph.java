@@ -5,28 +5,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
-import com.liqi.exception.NodeAlreadyExistException;
 import com.liqi.exception.NodeNonExistException;
 
 
 public class Graph{
 	private Map<Node, List<Edge>> vertices;
-	private int nodeNumber = 0;
 	private int edgeNumber = -1;
 	
 	public Graph(){
 		vertices = new HashMap<Node, List<Edge>>();
-	}
-	
-	private void incrementNodeNumber(){
-		++nodeNumber;
-	}
-		
-	private void incrementEdgeNumber(){
-		++edgeNumber;
 	}
 	
 	public boolean addNode(Node newNode){
@@ -136,9 +125,9 @@ public class Graph{
 //			count += entry.getValue().size();
 //		}
 //		return count/2;
-		if(this.edgeNumber != -1){
+		/*if(this.edgeNumber != -1){
 			return this.edgeNumber;
-		}
+		}*/
 		Set<Edge> edgeSet = new HashSet<Edge>(this.getNodesNumber() * 2);
 		Iterator<Map.Entry<Node, List<Edge>>> itr = vertices.entrySet().iterator();
 		Map.Entry<Node, List<Edge>> entry = null;

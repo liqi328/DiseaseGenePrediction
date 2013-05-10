@@ -10,8 +10,8 @@ import java.util.Map;
 
 import com.liqi.model.HprdIdMapping;
 
-public class HprdIdMappingReader extends ModelReader {
-
+public class HprdIdMappingReader extends AbstractModelReader {
+	/*String:hprdId - */
 	private Map<String, HprdIdMapping> hprdIdMappingMap;
 	
 	public HprdIdMappingReader(String filename) {
@@ -33,6 +33,7 @@ public class HprdIdMappingReader extends ModelReader {
 				hm = createHprdIdMapping(line);
 				hprdIdMappingMap.put(hm.getHrpdId(), hm);
 			}
+			in.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

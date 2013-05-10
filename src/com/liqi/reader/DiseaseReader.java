@@ -1,6 +1,6 @@
 package com.liqi.reader;
 
-public class DiseaseReader extends ModelReader{
+public class DiseaseReader extends AbstractModelReader{
 
 	public DiseaseReader(String filename) {
 		super(filename);

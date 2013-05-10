@@ -17,7 +17,7 @@ import com.liqi.model.TissueSpecificGeneExpression;
 /* 数据库：GEO, http://www.ncbi.nlm.nih.gov/geo
  * 组织特异性基因表达数据
  * */
-public class TissuSpecificGeneExpressionReader extends ModelReader{
+public class TissuSpecificGeneExpressionReader extends AbstractModelReader{
 	/* 组织名称-组织*/
 	private Map<String, Tissue> tissueMap;
 	/*entrezGeneid-gene表达数据*/
@@ -33,7 +33,7 @@ public class TissuSpecificGeneExpressionReader extends ModelReader{
 		return this.tissueMap;
 	}
 	
-	public Map<String, TissueSpecificGeneExpression> getTsGeneExpressionMap(){
+	public Map<String, TissueSpecificGeneExpression> getTissueSpecificGeneExpressionMap(){
 		return this.tsGeneExpressionMap;
 	}
 	

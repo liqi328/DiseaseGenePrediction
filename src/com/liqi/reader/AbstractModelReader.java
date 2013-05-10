@@ -1,9 +1,9 @@
 package com.liqi.reader;
 
-public abstract class ModelReader {
+public abstract class AbstractModelReader {
 	protected String filename;
 	
-	public ModelReader(String filename){
+	public AbstractModelReader(String filename){
 		this.filename = filename;
 	}
 	

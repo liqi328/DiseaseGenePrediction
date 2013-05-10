@@ -8,7 +8,7 @@ import com.liqi.graph.Edge;
 import com.liqi.graph.Graph;
 import com.liqi.graph.Node;
 
-public class PPIReader extends ModelReader {
+public class PPIReader extends AbstractModelReader {
 	private Graph ppi;
 	public PPIReader(String filename) {
 		super(filename);

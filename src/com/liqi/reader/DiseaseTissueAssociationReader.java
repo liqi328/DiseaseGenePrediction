@@ -10,7 +10,7 @@ import java.util.Map;
 
 import com.liqi.model.DiseaseTissueAssociation;
 
-public class DiseaseTissueAssociationReader extends ModelReader {
+public class DiseaseTissueAssociationReader extends AbstractModelReader {
 	private Map<String, DiseaseTissueAssociation> diseaseTissueAssMap;
 	
 	public DiseaseTissueAssociationReader(String filename) {

@@ -1,6 +1,6 @@
 package com.liqi.reader;
 
-public class GeneReader extends ModelReader{
+public class GeneReader extends AbstractModelReader{
 
 	public GeneReader(String filename) {
 		super(filename);
