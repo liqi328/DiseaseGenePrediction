@@ -5,6 +5,7 @@ class InputArgument{
 	private String ppiFilename;
 	private String geneDiseaseAssociationFilename;
 	private String idMappingFilename;
+	private String tissueSpecificGeneExpressionFilename;
 	private String outputDir;
 	
 	public String getPpiFilename() {
@@ -32,6 +33,15 @@ class InputArgument{
 		this.idMappingFilename = idMappingFilename;
 	}
 	
+	public String getTissueSpecificGeneExpressionFilename() {
+		return tissueSpecificGeneExpressionFilename;
+	}
+
+	public void setTissueSpecificGeneExpressionFilename(
+			String tissueSpecificGeneExpressionFilename) {
+		this.tissueSpecificGeneExpressionFilename = tissueSpecificGeneExpressionFilename;
+	}
+
 	public String getOutputDir() {
 		return outputDir;
 	}

@@ -11,6 +11,7 @@ import java.util.Map;
 import com.liqi.model.DiseaseTissueAssociation;
 
 public class DiseaseTissueAssociationReader extends AbstractModelReader {
+	/* String: ¼²²¡µÄOMIM_ID */
 	private Map<String, DiseaseTissueAssociation> diseaseTissueAssMap;
 	
 	public DiseaseTissueAssociationReader(String filename) {

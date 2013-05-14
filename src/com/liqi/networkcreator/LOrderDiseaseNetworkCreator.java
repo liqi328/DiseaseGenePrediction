@@ -1,4 +1,4 @@
-package com.liqi.experiment;
+package com.liqi.networkcreator;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,7 +8,6 @@ import com.liqi.graph.Edge;
 import com.liqi.graph.Graph;
 import com.liqi.graph.Node;
 import com.liqi.model.Gene;
-import com.liqi.util.WriterUtil;
 
 /*
  * 根据已知的致病基因，从PPI中提取L-阶致病基因子网(L为邻居的层数)
@@ -16,24 +15,28 @@ import com.liqi.util.WriterUtil;
  * L-阶疾病网络，构建器
  * */
 public class LOrderDiseaseNetworkCreator implements NetworkCreator {
-	private Buffer buffer;
+	private Graph sourcePPI;
+	private Map<String, Gene> diseaseGeneMap;
 	
-	private Graph subPpi;
+	private Graph resultSubPpi;
 	
 	private Map<String, Node> nodes;
 	
-	/* level 阶子网*/
-	int level = 0;
+	/* level 阶子网, 阶数*/
+	private int level = 0;
 	
-	public LOrderDiseaseNetworkCreator(Buffer buffer, Integer level){
-		this.buffer = buffer;
+	public LOrderDiseaseNetworkCreator(Graph ppi, Map<String, Gene> diseaseGeneMap,
+			Integer level){
+		this.sourcePPI = ppi;
+		this.diseaseGeneMap = diseaseGeneMap;
 		this.level = level;
-		subPpi = new Graph();
-		nodes = new HashMap<String, Node>();		
+		
+		resultSubPpi = new Graph();
+		nodes = new HashMap<String, Node>();	
 	}
 	
 	public Graph getResultPPI(){
-		return this.subPpi;
+		return this.resultSubPpi;
 	}
 	
 	@Override
@@ -46,34 +49,26 @@ public class LOrderDiseaseNetworkCreator implements NetworkCreator {
 		
 		createSubPPI();		
 	}
-	
-	public void printSubNetwork(){
-		String outFilename = buffer.getOutputDirectory() + "sub_disease_ppi_"+ level + ".txt";
-		WriterUtil.write(outFilename, subPpi.toString());
-	}
+
 	
 	/* 初始化：将致病基因作为网络中的节点*/
 	private void initNodes(){
-		Map<String, Gene> hprdGene = buffer.getHprdGene();
-		
-		Iterator<Gene> itr = hprdGene.values().iterator();
+		Iterator<Gene> itr = diseaseGeneMap.values().iterator();
 		Node node = null;
 		while(itr.hasNext()){
-			node = new Node(itr.next().getHprdId());
+			node = new Node("" + Integer.parseInt(itr.next().getHprdId()));
 			nodes.put(node.getName(), node);
 		}
 		//System.out.println("Init nodes size = " + nodes.size());
 	}
 	
 	private void addNeighborsNode(){
-		Graph ppi = buffer.getPpi();
-		
 		Iterator<Node> itr = nodes.values().iterator();
 		Node node = null;
 		Map<String, Node> neighborNode = new HashMap<String, Node>();
 		while(itr.hasNext()){
 			node = itr.next();
-			Iterator<Edge> edgeItr = ppi.createNeighborsIterator(node);
+			Iterator<Edge> edgeItr = sourcePPI.createNeighborsIterator(node);
 			if(edgeItr == null){
 				/* delete this node*/
 				continue;
@@ -108,16 +103,14 @@ public class LOrderDiseaseNetworkCreator implements NetworkCreator {
 	}
 	
 	private void addNeighborEdge(Node fromNode){		
-		Graph ppi = buffer.getPpi();
-		
-		Iterator<Edge> edgeItr = ppi.createNeighborsIterator(fromNode);
+		Iterator<Edge> edgeItr = sourcePPI.createNeighborsIterator(fromNode);
 		if(edgeItr == null){
 			return;
 		}
 		
 		Edge e = null;
 		Node toNode = null;
-		subPpi.addNode(fromNode);
+		resultSubPpi.addNode(fromNode);
 		
 		while(edgeItr.hasNext()){
 			e = edgeItr.next();
@@ -126,7 +119,7 @@ public class LOrderDiseaseNetworkCreator implements NetworkCreator {
 			}
 			toNode = nodes.get(e.getToNode().getName());
 			if(toNode == null)continue;
-			subPpi.addEdge(fromNode, toNode);
+			resultSubPpi.addEdge(fromNode, toNode);
 		}
 		
 	}

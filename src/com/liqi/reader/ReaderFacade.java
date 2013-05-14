@@ -11,87 +11,88 @@ import com.liqi.model.Tissue;
 import com.liqi.model.TissueSpecificGeneExpression;
 
 public class ReaderFacade {
-	private ReaderFacade facade = new ReaderFacade();
-	
-	private Graph ppi = null;
-	private Map<String, DiseaseTissueAssociation> diseaseTissueAssMap = null;
+	private static ReaderFacade INSTANCE = new ReaderFacade();
+		
+	/* 组织数据 
+	 * String:组织名称
+	 * */
 	private Map<String, Tissue> tissueMap = null;
-	private Map<String, TissueSpecificGeneExpression> tsGeneExpressionMap = null;
-	private Map<String, HprdIdMapping> hprdIdMappingMap = null;
 	
-	/*String:omimId*/
+	/* 组织特异性基因表达数据
+	 * String:entrezGeneid
+	 * */
+	private Map<String, TissueSpecificGeneExpression> tissueSpecificGeneExpressionMap = null;	
+	
+	/* 致病基因 map
+	 * String:omimId*/
 	private Map<String, Gene> diseaseGeneMap = null;
-	/*String:diseaseName*/
+	
+	/* 疾病数据 
+	 * String:diseaseName*/
 	private Map<String, Disease> diseaseMap = null;
 	
 	private ReaderFacade(){}
 	
-	public ReaderFacade getInstance(){
-		return this.facade;
+	public static ReaderFacade getInstance(){
+		return INSTANCE;
 	}
 	
 	public Map<String, Gene> getDiseaseGeneMap(String filename){
-		if(diseaseGeneMap == null){
-			readGeneDiseaseAssociation(filename);
-		}
+		readGeneDiseaseAssociation(filename);
 		return this.diseaseGeneMap;
 	}
 	
 	public Map<String, Disease> getDiseaseMap(String filename){
-		if(diseaseMap == null){
-			readGeneDiseaseAssociation(filename);
-		}
+		readGeneDiseaseAssociation(filename);
 		return this.diseaseMap;
 	}
 	
 	public Graph getPPI(String filename){
-		if(ppi == null){
-			PPIReader reader = new PPIReader(filename);
-			reader.read();
-			ppi = reader.getPPI();
-		}
-		return this.ppi;
+		PPIReader reader = new PPIReader(filename);
+		reader.read();
+		/* 人类的PPI网络 */
+		Graph ppi = reader.getPPI();
+		return ppi;
 	}
 	
 	public Map<String, DiseaseTissueAssociation> getDiseaseTissueAssociationMap(String filename){
-		if(diseaseTissueAssMap == null){
-			DiseaseTissueAssociationReader reader = new DiseaseTissueAssociationReader(filename);
-			reader.read();
-			diseaseTissueAssMap = reader.getDiseaseTissueAssociationMap();
-		}
+		DiseaseTissueAssociationReader reader = new DiseaseTissueAssociationReader(filename);
+		reader.read();
+		
+		/* 疾病与组织的关联关系
+		 * String: 疾病的OMIM_ID
+		 * */
+		Map<String, DiseaseTissueAssociation> diseaseTissueAssMap = reader.getDiseaseTissueAssociationMap();
 		
 		return diseaseTissueAssMap;
 	}
 	
 	public Map<String, HprdIdMapping> getHprdIdMappingMap(String filename){
-		if(hprdIdMappingMap == null){
-			HprdIdMappingReader reader = new HprdIdMappingReader(filename);
-			reader.read();
-			hprdIdMappingMap = reader.getHprdIdMappingMap();
-		}
-		return this.hprdIdMappingMap;
+		HprdIdMappingReader reader = new HprdIdMappingReader(filename);
+		reader.read();
+		
+		/* HPRD 数据库中的HPRD_ID_MAPPINGS.txt
+		 * String:hprdId
+		 * */
+		Map<String, HprdIdMapping> hprdIdMappingMap = reader.getHprdIdMappingMap();
+		return hprdIdMappingMap;
 	}
 	
 	public Map<String, Tissue> getTissueMap(String filename){
-		if(tissueMap == null){
-			readTissueSpecificGeneExpression(filename);
-		}
+		readTissueSpecificGeneExpression(filename);
 		return this.tissueMap;
 	}
 	
 	public Map<String, TissueSpecificGeneExpression> getTissueSpecificGeneExpressionMap(String filename){
-		if(tsGeneExpressionMap == null){
-			readTissueSpecificGeneExpression(filename);
-		}
-		return this.tsGeneExpressionMap;
+		readTissueSpecificGeneExpression(filename);
+		return this.tissueSpecificGeneExpressionMap;
 	}
-	
 	
 	private void readTissueSpecificGeneExpression(String filename){
 		TissuSpecificGeneExpressionReader reader = new TissuSpecificGeneExpressionReader(filename);
 		reader.read();
 		tissueMap = reader.getTissueMap();
-		tsGeneExpressionMap = reader.getTissueSpecificGeneExpressionMap();
+		tissueSpecificGeneExpressionMap = reader.getTissueSpecificGeneExpressionMap();
 	}
 	
 	private void readGeneDiseaseAssociation(String filename){

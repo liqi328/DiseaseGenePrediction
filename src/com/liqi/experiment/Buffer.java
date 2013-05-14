@@ -13,7 +13,9 @@ import com.liqi.model.Gene;
 import com.liqi.reader.PPIReader;
 import com.liqi.util.WriterUtil;
 
-class Buffer {
+/* ÒÑ·ÏÆú£¬±»ExperimentDataBuffer.java´úÌæ*/
+@Deprecated
+public class Buffer {
 	private Graph ppi;
 	
 	private InputArgument inputArg;

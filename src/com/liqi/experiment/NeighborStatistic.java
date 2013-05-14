@@ -12,8 +12,7 @@ import com.liqi.model.Gene;
  * 
  * */
 public class NeighborStatistic extends AbstractStatistic{
-	
-	public NeighborStatistic(Buffer buffer){
+	public NeighborStatistic(ExperimentDataBuffer buffer){
 		super(buffer);
 	}
 	
@@ -40,8 +39,9 @@ public class NeighborStatistic extends AbstractStatistic{
 	
 	
 	private void statistic(){		
-		Map<String, Gene> hprdGene = buffer.getHprdGene();
-		Iterator<Gene> itr = hprdGene.values().iterator();
+		Map<String, Gene> diseaseGeneMap = dataBuffer.getDiseaseGeneMap();
+		System.out.println("2 after:Disease Gene Map size=" + diseaseGeneMap.size());
+		Iterator<Gene> itr = diseaseGeneMap.values().iterator();
 		
 		Gene gene = null;
 		while(itr.hasNext()){
@@ -51,16 +51,17 @@ public class NeighborStatistic extends AbstractStatistic{
 	}
 	
 	private void processOneGene(Gene gene){
-		Graph ppi = buffer.getPpi();
-		Node node = new Node(gene.getHprdId());
+		Graph ppi = dataBuffer.getPpi();
+		Node node = new Node("" + Integer.parseInt(gene.getHprdId()));
+		if(node.getName() == null){
+			System.out.println("Error in Neighbor Statistic 63\n" + gene.toString());
+		}
 		StatisticData sd = new StatisticData(gene);
 		sd.setDegree(ppi.getNeighborsNumber(node));
 		
-		Map<String, Gene> hprdGene = buffer.getHprdGene();
-		
 		Iterator<Edge> itr = ppi.createNeighborsIterator(node);
 		if(itr == null){
-			System.out.println("[ " + node.getName() + " ] does not appear in this ppi. ");
+			System.out.println("[ hprd_id: " + node.getName()+", omim_id: "+ gene.getOmimId() + " ] does not appear in this ppi. ");
 			return;
 		}
 		Edge e = null;
@@ -71,12 +72,27 @@ public class NeighborStatistic extends AbstractStatistic{
 				sd.setDegree(sd.getDegree() - 1);
 				continue;
 			}
-			if(hprdGene.containsKey(e.getToNode().getName())){
+			if(isDiseaseGene(e.getToNode().getName())){
 				++count;
 			}
 		}
 		sd.setNeighborDiseaseGeneCount(count);
 		sdList.add(sd);
+	}
+	
+	private boolean isDiseaseGene(String hprdId){
+		Map<String, Gene> diseaseGeneMap = dataBuffer.getDiseaseGeneMap();
+		Iterator<Gene> itr = diseaseGeneMap.values().iterator();
+		while(itr.hasNext()){
+			Gene gene = itr.next();
+//			if(gene.getHprdId().equals(hprdId)){
+//				return true;
+//			}
+			if(Integer.parseInt(gene.getHprdId()) == Integer.parseInt(hprdId)){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

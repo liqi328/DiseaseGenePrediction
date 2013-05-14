@@ -1,4 +1,4 @@
-package com.liqi.experiment;
+package com.liqi.networkcreator;
 
 
 public interface NetworkCreator {

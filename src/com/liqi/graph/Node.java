@@ -46,8 +46,8 @@ public class Node implements Cloneable{
 	public int hashCode(){
 		int result = 17;
 		final int prime = 31;
-		result = prime * result + name.hashCode();
-		return 0;
+		result = prime * result + ((name == null)? 0 : name.hashCode());
+		return result;
 	}
 
 }

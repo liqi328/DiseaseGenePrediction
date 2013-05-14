@@ -21,12 +21,12 @@ public class TissuSpecificGeneExpressionReader extends AbstractModelReader{
 	/* 组织名称-组织*/
 	private Map<String, Tissue> tissueMap;
 	/*entrezGeneid-gene表达数据*/
-	private Map<String, TissueSpecificGeneExpression> tsGeneExpressionMap;
+	private Map<String, TissueSpecificGeneExpression> tissueSpecificGeneExpressionMap;
 	
 	public TissuSpecificGeneExpressionReader(String filename){
 		super(filename);
 		tissueMap = new HashMap<String, Tissue>();
-		tsGeneExpressionMap = new HashMap<String, TissueSpecificGeneExpression>();
+		tissueSpecificGeneExpressionMap = new HashMap<String, TissueSpecificGeneExpression>();
 	}
 	
 	public Map<String, Tissue> getTissueMap(){
@@ -34,7 +34,7 @@ public class TissuSpecificGeneExpressionReader extends AbstractModelReader{
 	}
 	
 	public Map<String, TissueSpecificGeneExpression> getTissueSpecificGeneExpressionMap(){
-		return this.tsGeneExpressionMap;
+		return this.tissueSpecificGeneExpressionMap;
 	}
 	
 	public void read(){
@@ -117,7 +117,7 @@ public class TissuSpecificGeneExpressionReader extends AbstractModelReader{
 		/*一个基因可能有多行 表达数据
 		 * 取平均值
 		 * */
-		TissueSpecificGeneExpression tmp = tsGeneExpressionMap.get(tsge.getEntrezId());
+		TissueSpecificGeneExpression tmp = tissueSpecificGeneExpressionMap.get(tsge.getEntrezId());
 		if(tmp != null){		
 			//取平均值
 			NumberFormat nf = new DecimalFormat("#.00");
@@ -131,6 +131,6 @@ public class TissuSpecificGeneExpressionReader extends AbstractModelReader{
 			}
 		}	
 		
-		tsGeneExpressionMap.put(tsge.getEntrezId(), tsge);
+		tissueSpecificGeneExpressionMap.put(tsge.getEntrezId(), tsge);
 	}
 }
