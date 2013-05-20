@@ -46,7 +46,8 @@ public class HprdIdMappingReader extends AbstractModelReader {
 	private HprdIdMapping createHprdIdMapping(String line){
 		HprdIdMapping hm = new HprdIdMapping();
 		String[] values = line.split("\t");
-		hm.setHrpdId(values[0]);
+		//hm.setHrpdId(values[0]);
+		hm.setHrpdId("" + Integer.parseInt(values[0]));
 		hm.setGeneSymbol(values[1]);
 		hm.setNucleotideAccession(values[2]);
 		hm.setProteinAccession(values[3]);

@@ -1,10 +1,12 @@
 package com.liqi.experiment;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import com.liqi.centrality.alg.DC;
 import com.liqi.graph.Graph;
 import com.liqi.networkcreator.LOrderDiseaseNetworkCreator;
+import com.liqi.networkcreator.TissueSpecificPPINetworkCreator;
 import com.liqi.proxy.ProxyFactory;
 import com.liqi.util.WriterUtil;
 
@@ -24,30 +26,81 @@ public class ExperimentMain {
 		return inputArg;
 	}
 	
+	public static void createLOrderSubnetwork(InputArgument inputArg, ExperimentDataBuffer buffer){
+		for(int i=0; i<=1;++i){
+			LOrderDiseaseNetworkCreator ldnCreator = (LOrderDiseaseNetworkCreator) ProxyFactory.getProgramRuntimeProxyInstance(LOrderDiseaseNetworkCreator.class,
+					new Class[]{Graph.class, Map.class, Integer.class}, new Object[]{buffer.getPpi(), buffer.getDiseaseGeneMap(), i});
+			ldnCreator.create();
+			Graph subPPI = ldnCreator.getResultPPI();
+			String outFilename = inputArg.getOutputDir() + "sub_disease_ppi_"+ i + ".txt";
+			WriterUtil.write(outFilename, subPPI.toString());
+			//sdn.printSubNetwork();
+			
+			DC dc = new DC();
+			//DC dc = (DC)ProxyFactory.getProgramRuntimeProxyInstance(DC.class, null, null);
+			dc.run(subPPI);
+			String dcFile = inputArg.getOutputDir() + "sub_disease_ppi_" + i +"_dc.txt";
+			WriterUtil.write(dcFile, dc.getReuslt());
+		}	
+	}
+	
+	public static Map<String, Graph> createTissueSpecificPPInetwork(InputArgument inputArg, ExperimentDataBuffer buffer){
+//		TissueSpecificPPINetworkCreator tsnCreator = new TissueSpecificPPINetworkCreator(buffer.getPpi(),
+//				buffer.getTissueMap(), buffer.getTissueSpecificGeneExpressionMap(),
+//				buffer.getHprdIdMappingMap());
+		TissueSpecificPPINetworkCreator tsnCreator = (TissueSpecificPPINetworkCreator) ProxyFactory.getProgramRuntimeProxyInstance(
+				TissueSpecificPPINetworkCreator.class, 
+				new Class[]{Graph.class, Map.class, Map.class, Map.class}, 
+				new Object[]{buffer.getPpi(), buffer.getTissueMap(), 
+					buffer.getTissueSpecificGeneExpressionMap(),
+					buffer.getHprdIdMappingMap()});
+		tsnCreator.create();
+		Map<String, Graph> ppiMap = tsnCreator.getResultPPIMap();
+		Iterator<Map.Entry<String, Graph>> itr = ppiMap.entrySet().iterator();
+		Map.Entry<String, Graph> entry = null;
+		while(itr.hasNext()){
+			entry = itr.next();
+			String filename = inputArg.getOutputDir() + "TSPPIN/" 
+			+ entry.getKey() + ".txt";
+			WriterUtil.write(filename, entry.getValue().toString());
+		}
+		
+		return ppiMap;
+	}
+	
+	public static void createDiseaseTSPIN(InputArgument inputArg, ExperimentDataBuffer buffer,
+			Map<String, Graph> tsPPIMap){
+		int lOrder = 1;
+		Iterator<Map.Entry<String, Graph>> itrIterator = tsPPIMap.entrySet().iterator();
+		Map.Entry<String, Graph> entry = null;
+		while(itrIterator.hasNext()){
+			entry = itrIterator.next();
+			LOrderDiseaseNetworkCreator ldnCreator = new LOrderDiseaseNetworkCreator(
+					entry.getValue(), buffer.getDiseaseGeneMap(), lOrder);
+			ldnCreator.create();
+			Graph diseaseTSPPI = ldnCreator.getResultPPI();
+			
+			String outFilename = inputArg.getOutputDir() + "DTSPPIN_"+ lOrder 
+					+ "/" + entry.getKey() +"_"+ lOrder + ".txt";
+			WriterUtil.write(outFilename, diseaseTSPPI.toString());
+		}
+	}
+	
 	public static void main1(String[] args){
 		InputArgument inputArg = parseArgument(args);
-		//ExperimentDataBuffer buffer = new ExperimentDataBuffer(inputArg);
-		ExperimentDataBuffer buffer = (ExperimentDataBuffer)ProxyFactory.getProgramRuntimeProxyInstance(ExperimentDataBuffer.class, 
-				new Class[]{InputArgument.class}, new Object[]{inputArg});
+		ExperimentDataBuffer buffer = new ExperimentDataBuffer(inputArg);
+//		ExperimentDataBuffer buffer = (ExperimentDataBuffer)ProxyFactory.getProgramRuntimeProxyInstance(ExperimentDataBuffer.class, 
+//				new Class[]{InputArgument.class}, new Object[]{inputArg});
 		
 		Statistic sta = new NeighborStatistic(buffer);
 		sta.run();
 		WriterUtil.write(inputArg.getOutputDir() + "neighborStatistic.txt", sta.getStatisticResult());
 		
-		for(int i=0; i<=1;++i){
-			LOrderDiseaseNetworkCreator sdn = (LOrderDiseaseNetworkCreator) ProxyFactory.getProgramRuntimeProxyInstance(LOrderDiseaseNetworkCreator.class,
-					new Class[]{Graph.class, Map.class, Integer.class}, new Object[]{buffer.getPpi(), buffer.getDiseaseGeneMap(), i});
-			sdn.create();
-			String outFilename = inputArg.getOutputDir() + "sub_disease_ppi_"+ i + ".txt";
-			WriterUtil.write(outFilename, sdn.getResultPPI().toString());
-			//sdn.printSubNetwork();
-			
-			DC dc = new DC();
-			//DC dc = (DC)ProxyFactory.getProgramRuntimeProxyInstance(DC.class, null, null);
-			dc.run(sdn.getResultPPI());
-			String dcFile = inputArg.getOutputDir() + "sub_disease_ppi_" + i +"_dc.txt";
-			WriterUtil.write(dcFile, dc.getReuslt());
-		}		
+		createLOrderSubnetwork(inputArg, buffer);
+		
+		Map<String, Graph> tsPPIMap = createTissueSpecificPPInetwork(inputArg, buffer);
+		
+		createDiseaseTSPIN(inputArg, buffer, tsPPIMap);
 	}
 	
 	

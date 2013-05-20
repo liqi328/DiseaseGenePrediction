@@ -40,9 +40,10 @@ public class PPIReader extends AbstractModelReader {
 		Node fromNode = new Node(cols[0]);
 		Node toNode   = new Node(cols[1]);
 		Edge edge = new Edge(fromNode, toNode);
-//		if(edge.isSelfLoop()){
-//			return;
-//		}
+		if(edge.isSelfLoop()){
+			ppi.addNode(fromNode);
+			return;
+		}
 		
 		ppi.addEdge(edge);		
 	} 

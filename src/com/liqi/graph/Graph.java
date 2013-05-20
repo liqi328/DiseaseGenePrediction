@@ -56,14 +56,14 @@ public class Graph{
 		Node fromNode = newEdge.getFromNode();
 		Node toNode =   newEdge.getToNode();
 		
-		this.addNode(fromNode);
-		this.addNode(toNode);
-		
-		if(vertices.get(fromNode).contains(newEdge) || vertices.get(toNode).contains(newEdge)){
+		if(containsEdge(fromNode, toNode)){
 			//System.out.println("Duplicate Edge.");
 			//System.out.println(newEdge.toString());
 			return false;
 		}
+		
+		this.addNode(fromNode);
+		this.addNode(toNode);
 		
 		vertices.get(fromNode).add(newEdge);
 		Edge edge2 = new Edge(toNode, fromNode);
@@ -150,6 +150,40 @@ public class Graph{
 			return true;
 		}
 		return false;
+	}
+	
+	public String nodesToString(){
+		StringBuffer buf = new StringBuffer();
+		
+		Iterator<Map.Entry<Node, List<Edge>>> itr = vertices.entrySet().iterator();
+		Map.Entry<Node, List<Edge>> entry = null;
+		while(itr.hasNext()){
+			entry = itr.next();
+			buf.append(entry.getKey().toString()).append("\n");
+		}
+		
+		return buf.toString();
+	}
+	
+	public String edgesToString(){
+		StringBuffer buf = new StringBuffer();
+		int edgeNum = this.getEdgesNumber();
+		//nodeNum = nodeNum << 3;
+		
+		Set<Edge> edgeSet = new HashSet<Edge>(edgeNum);
+		Iterator<Map.Entry<Node, List<Edge>>> itr = vertices.entrySet().iterator();
+		Map.Entry<Node, List<Edge>> entry = null;
+		while(itr.hasNext()){
+			entry = itr.next();
+			edgeSet.addAll(entry.getValue());		
+		}
+		
+		Iterator<Edge> edgeItr = edgeSet.iterator();
+		while(edgeItr.hasNext()){
+			buf.append(edgeItr.next().toString()).append("\n");
+		}
+		
+		return buf.toString();
 	}
 	
 	

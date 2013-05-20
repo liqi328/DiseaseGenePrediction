@@ -29,14 +29,15 @@ public class TissueSpecificPPINetworkCreator implements NetworkCreator {
 	 * @param sourcePPI 原始的PPI
 	 * @param tissueMap 组织信息
 	 * @param tissueSpecificGeneExpressionMap 组织特异性基因表达数据
+	 * @param hprdIdmappingMap	HPRD数据库的idmaping
 	 * */
 	public TissueSpecificPPINetworkCreator(Graph sourcePPI, Map<String, Tissue> tissueMap, 
 			Map<String, TissueSpecificGeneExpression> tsGeneExpMap, 
-			Map<String, HprdIdMapping> hmMap){
+			Map<String, HprdIdMapping> hprdIdmappingMap){
 		this.sourcePPI = sourcePPI;
 		this.tissueMap = tissueMap;
 		this.tissueSpecificGeneExpressionMap = tsGeneExpMap;
-		this.hprdIdMappingMap = hmMap;
+		this.hprdIdMappingMap = hprdIdmappingMap;
 		
 		this.resultPPIMap = new HashMap<String, Graph>();
 	}
@@ -96,15 +97,26 @@ public class TissueSpecificPPINetworkCreator implements NetworkCreator {
 		}
 	}
 	
-	private boolean isNodeCanBeAdded(final Node node, final Tissue t){
-		HprdIdMapping hm = hprdIdMappingMap.get(node.getName());
+	protected TissueSpecificGeneExpression getTissueSpecificGeneExpression(String nodeName){
+		HprdIdMapping hm = hprdIdMappingMap.get(nodeName);
 		if(hm == null){
-			return false;
+			return null;
 		}
 		TissueSpecificGeneExpression tsGeneExp = tissueSpecificGeneExpressionMap.get(hm.getEntrezGeneId());
-		if(tsGeneExp == null){
-			return false;
-		}
+		return tsGeneExp;
+	}
+	
+	private boolean isNodeCanBeAdded(final Node node, final Tissue t){
+//		HprdIdMapping hm = hprdIdMappingMap.get(node.getName());
+//		if(hm == null){
+//			return false;
+//		}
+//		TissueSpecificGeneExpression tsGeneExp = tissueSpecificGeneExpressionMap.get(hm.getEntrezGeneId());
+//		if(tsGeneExp == null){
+//			return false;
+//		}
+		TissueSpecificGeneExpression tsGeneExp = getTissueSpecificGeneExpression(node.getName());
+		if(tsGeneExp == null) return false;
 		double avg = tsGeneExp.getExpressionValue(t.getFirstSampleId());
 		avg += tsGeneExp.getExpressionValue(t.getSecondSampleId());
 		avg /= 2;
