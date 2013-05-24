@@ -10,6 +10,12 @@ import java.util.Map;
 
 import com.liqi.model.HprdIdMapping;
 
+
+/* HPRD数据库中的HPRD_ID_MAPPINGS.txt
+ * 
+ * */
+
+
 public class HprdIdMappingReader extends AbstractModelReader {
 	/*String:hprdId - */
 	private Map<String, HprdIdMapping> hprdIdMappingMap;

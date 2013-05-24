@@ -3,11 +3,12 @@ package com.liqi.experiment;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.liqi.centrality.alg.DC;
 import com.liqi.graph.Graph;
 import com.liqi.networkcreator.LOrderDiseaseNetworkCreator;
 import com.liqi.networkcreator.TissueSpecificPPINetworkCreator;
 import com.liqi.proxy.ProxyFactory;
+import com.liqi.statistic.NeighborStatistic;
+import com.liqi.statistic.Statistic;
 import com.liqi.util.WriterUtil;
 
 
@@ -27,20 +28,20 @@ public class ExperimentMain {
 	}
 	
 	public static void createLOrderSubnetwork(InputArgument inputArg, ExperimentDataBuffer buffer){
-		for(int i=0; i<=1;++i){
+		for(int i=0; i<=2;++i){
 			LOrderDiseaseNetworkCreator ldnCreator = (LOrderDiseaseNetworkCreator) ProxyFactory.getProgramRuntimeProxyInstance(LOrderDiseaseNetworkCreator.class,
 					new Class[]{Graph.class, Map.class, Integer.class}, new Object[]{buffer.getPpi(), buffer.getDiseaseGeneMap(), i});
 			ldnCreator.create();
 			Graph subPPI = ldnCreator.getResultPPI();
-			String outFilename = inputArg.getOutputDir() + "sub_disease_ppi_"+ i + ".txt";
-			WriterUtil.write(outFilename, subPPI.toString());
+			String outFilename = inputArg.getOutputDir()+ "DPIN/" + "sub_disease_ppi_"+ i + ".txt";
+			WriterUtil.write(outFilename, subPPI.edgesToString());
 			//sdn.printSubNetwork();
 			
-			DC dc = new DC();
-			//DC dc = (DC)ProxyFactory.getProgramRuntimeProxyInstance(DC.class, null, null);
-			dc.run(subPPI);
-			String dcFile = inputArg.getOutputDir() + "sub_disease_ppi_" + i +"_dc.txt";
-			WriterUtil.write(dcFile, dc.getReuslt());
+//			DC dc = new DC();
+//			//DC dc = (DC)ProxyFactory.getProgramRuntimeProxyInstance(DC.class, null, null);
+//			dc.run(subPPI);
+//			String dcFile = inputArg.getOutputDir() + "sub_disease_ppi_" + i +"_dc.txt";
+//			WriterUtil.write(dcFile, dc.getReuslt());
 		}	
 	}
 	
@@ -62,15 +63,15 @@ public class ExperimentMain {
 			entry = itr.next();
 			String filename = inputArg.getOutputDir() + "TSPPIN/" 
 			+ entry.getKey() + ".txt";
-			WriterUtil.write(filename, entry.getValue().toString());
+			WriterUtil.write(filename, entry.getValue().edgesToString());
 		}
 		
 		return ppiMap;
 	}
 	
 	public static void createDiseaseTSPIN(InputArgument inputArg, ExperimentDataBuffer buffer,
-			Map<String, Graph> tsPPIMap){
-		int lOrder = 1;
+			Map<String, Graph> tsPPIMap, int order){
+		int lOrder = order;
 		Iterator<Map.Entry<String, Graph>> itrIterator = tsPPIMap.entrySet().iterator();
 		Map.Entry<String, Graph> entry = null;
 		while(itrIterator.hasNext()){
@@ -82,7 +83,8 @@ public class ExperimentMain {
 			
 			String outFilename = inputArg.getOutputDir() + "DTSPPIN_"+ lOrder 
 					+ "/" + entry.getKey() +"_"+ lOrder + ".txt";
-			WriterUtil.write(outFilename, diseaseTSPPI.toString());
+			//WriterUtil.write(outFilename, diseaseTSPPI.toString());
+			WriterUtil.write(outFilename, diseaseTSPPI.edgesToString());
 		}
 	}
 	
@@ -100,7 +102,8 @@ public class ExperimentMain {
 		
 		Map<String, Graph> tsPPIMap = createTissueSpecificPPInetwork(inputArg, buffer);
 		
-		createDiseaseTSPIN(inputArg, buffer, tsPPIMap);
+		createDiseaseTSPIN(inputArg, buffer, tsPPIMap, 1);
+		createDiseaseTSPIN(inputArg, buffer, tsPPIMap, 2);
 	}
 	
 	

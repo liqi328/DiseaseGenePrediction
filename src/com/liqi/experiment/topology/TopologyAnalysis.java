@@ -29,7 +29,7 @@ public class TopologyAnalysis {
 
 	public void ppiConversion(){		
 		String hprdFilename = "E:/2013疾病研究/疾病数据/HumanPPI/HPRD_Release9_062910/FLAT_FILES_072010/HPRD_ID_MAPPINGS.txt";
-		Map<String, HprdIdMapping> hprdIdMappingMap = ReaderFacade.getInstance().getHprdIdMappingMap(hprdFilename);
+		Map<String, HprdIdMapping> hprdIdMappingMap = ReaderFacade.getInstance().getHprdIdIndexedIdMappingMap(hprdFilename);
 		
 		Map<String, HprdIdMapping> geneNameMappingMap = new HashMap<String, HprdIdMapping>();
 		

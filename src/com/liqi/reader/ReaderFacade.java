@@ -27,9 +27,13 @@ public class ReaderFacade {
 	 * String:omimId*/
 	private Map<String, Gene> diseaseGeneMap = null;
 	
+	Map<String, Gene> omimIdIndexedDiseaseGeneMap = null;
+	
 	/* 疾病数据 
 	 * String:diseaseName*/
 	private Map<String, Disease> diseaseMap = null;
+	
+	private Map<String, Disease> omimDiseaseMap = null;
 	
 	private ReaderFacade(){}
 	
@@ -45,6 +49,18 @@ public class ReaderFacade {
 	public Map<String, Disease> getDiseaseMap(String filename){
 		readGeneDiseaseAssociation(filename);
 		return this.diseaseMap;
+	}
+	
+	public Map<String, Gene> getOmimDiseaseGeneMap(){
+		String filename = "E:/2013疾病研究/疾病数据/OMIM/morbidmap";
+		readOmimGeneDiseaseAssociation(filename);
+		return omimIdIndexedDiseaseGeneMap;
+	} 
+	
+	public Map<String, Disease> getOmimDiseaseMap(){
+		String filename = "E:/2013疾病研究/疾病数据/OMIM/morbidmap";
+		readOmimGeneDiseaseAssociation(filename);
+		return omimDiseaseMap;
 	}
 	
 	public Graph getPPI(String filename){
@@ -67,7 +83,7 @@ public class ReaderFacade {
 		return diseaseTissueAssMap;
 	}
 	
-	public Map<String, HprdIdMapping> getHprdIdMappingMap(String filename){
+	public Map<String, HprdIdMapping> getHprdIdIndexedIdMappingMap(String filename){
 		HprdIdMappingReader reader = new HprdIdMappingReader(filename);
 		reader.read();
 		
@@ -100,6 +116,14 @@ public class ReaderFacade {
 		reader.read();
 		diseaseMap = reader.getDiseaseMap();
 		diseaseGeneMap = reader.getDiseaseGeneMap();
+	}
+	
+	private void readOmimGeneDiseaseAssociation(String filename){
+		OmimGeneDiseaseAssociationReader reader = new OmimGeneDiseaseAssociationReader(
+				filename);
+		reader.read();
+		omimDiseaseMap = reader.getOmimDiseaseMap();
+		omimIdIndexedDiseaseGeneMap = reader.getOmimDiseaseGeneMap();
 	}
 
 }

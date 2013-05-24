@@ -1,8 +1,9 @@
-package com.liqi.experiment;
+package com.liqi.statistic;
 
 import java.util.Iterator;
 import java.util.Map;
 
+import com.liqi.experiment.ExperimentDataBuffer;
 import com.liqi.graph.Edge;
 import com.liqi.graph.Graph;
 import com.liqi.graph.Node;

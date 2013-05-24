@@ -78,7 +78,7 @@ public class ExperimentDataBuffer {
 
 	public Map<String, HprdIdMapping> getHprdIdMappingMap() {
 		if(hprdIdMappingMap == null){
-			hprdIdMappingMap = ReaderFacade.getInstance().getHprdIdMappingMap(
+			hprdIdMappingMap = ReaderFacade.getInstance().getHprdIdIndexedIdMappingMap(
 					inputArg.getIdMappingFilename());
 			initIdMappingMap();
 		}

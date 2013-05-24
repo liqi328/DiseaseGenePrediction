@@ -1,4 +1,4 @@
-package com.liqi.experiment;
+package com.liqi.statistic;
 
 public interface Statistic {
 	public void run();

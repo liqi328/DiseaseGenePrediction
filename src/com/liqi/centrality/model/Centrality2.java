@@ -7,7 +7,7 @@ import java.util.Map;
 
 
 public class Centrality2{
-	public static final String[] HEADER = {"HPRD_id", "relatedDiseaseCount", "BC", "CC", "DC", "EC", "IC", "SC", "SoECC", "BN", "MNC", "DMNC", "EPC"}; 
+	public static final String[] HEADER = {"NAME", "ISDISEASE", "BC", "CC", "DC", "EC", "IC", "SC", "LAC", "SOECC", "BN", "DMNC"}; 
 	public static final Map<String, Integer> centralityType = new HashMap<String, Integer>();
 	
 	static{
@@ -28,12 +28,12 @@ public class Centrality2{
 	}
 	
 	public void setValue(String key, Object value){
-		int index = centralityType.get(key);
+		int index = centralityType.get(key.toUpperCase());
 		centralities.set(index, value);
 	}
 	
 	public Object getValue(String key){
-		int index = centralityType.get(key);
+		int index = centralityType.get(key.toUpperCase());
 		return centralities.get(index);
 	}
 
@@ -44,7 +44,7 @@ public class Centrality2{
 	public class CentralityComparator implements Comparator<Centrality2>{
 		public CentralityComparator(String key) throws NullPointerException{
 			/* 此处应该确保 key 合法*/
-			this.sortKey = key;
+			this.sortKey = key.toUpperCase();
 		}
 
 		@Override

@@ -1,4 +1,4 @@
-package com.liqi.experiment;
+package com.liqi.statistic;
 
 import com.liqi.model.Gene;
 
