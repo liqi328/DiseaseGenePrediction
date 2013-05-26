@@ -5,17 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import jxl.JXLException;
 
 import com.liqi.centrality.model.Centrality2;
-import com.liqi.model.Gene;
-import com.liqi.model.HprdIdMapping;
-import com.liqi.reader.OmimGeneDiseaseAssociationReader;
-import com.liqi.reader.ReaderFacade;
-import com.liqi.statistic.GeneDiseaseCountStatistic;
+import com.liqi.statistic.CentralityAverageStatistic;
 import com.liqi.util.FileUtil;
 
 public class CentralityResult2Excel {
@@ -23,13 +18,17 @@ public class CentralityResult2Excel {
 	public void read(String dirName) throws IOException, JXLException{
 		File excelFile = new File(dirName+".xls");
 			
-		File txtOutDir = new File(dirName+"_txt");
-		FileUtil.makeDir(txtOutDir);
+		//File txtOutDir = new File(dirName+"_txt");
+		//FileUtil.makeDir(txtOutDir);
 		File[] fileDirs = FileUtil.getDirectoryList(dirName);
 		
 		Centrality2Excel excelWriter = new Centrality2Excel(excelFile);
 		
+		Map<String, Map<String, Map<String, Double>>> allAvgMap = 
+				new HashMap<String, Map<String, Map<String, Double>>>();
+		
 		String sheetName = null;
+		Map<String, Centrality2> centralityMap = null;
 		for(File dir: fileDirs){
 			sheetName = dir.getName();
 			File [] files = FileUtil.getFileList(dir.getAbsolutePath());
@@ -43,16 +42,24 @@ public class CentralityResult2Excel {
 				continue;
 			}
 			
-			Map<String, Centrality2> centralityMap = readOneCentralityMap(files);
-			CountDiseasesNumberOfGene.count(centralityMap);
+			centralityMap = readOneCentralityMap(files);
+			CountDiseaseNumberOfGene2.count(centralityMap);
 			
-			Centrality2Txt.write(txtOutDir.getAbsolutePath()+"/"+dir.getName(), centralityMap);
+			allAvgMap.put(sheetName, getAvgMap(centralityMap));
+			
+			//Centrality2Txt.write(txtOutDir.getAbsolutePath()+"/"+dir.getName(), centralityMap);
 			excelWriter.write(sheetName, centralityMap);
-			
-			centralityMap = null;
 		}
 		
+		excelWriter.writeCentralityAverage(allAvgMap);
 		excelWriter.close();
+	}
+	
+	private Map<String, Map<String, Double>> getAvgMap(Map<String, Centrality2> centralityMap){
+		 /* 获取统计信息*/       
+    	CentralityAverageStatistic casta = new CentralityAverageStatistic(centralityMap);
+		casta.run();
+		return casta.getStatisticResultMap();
 	}
 	
 	private Map<String, Centrality2> readOneCentralityMap(File[] files) throws IOException{
@@ -88,8 +95,8 @@ public class CentralityResult2Excel {
 	
 	public static void main(String[] args){
 		String[] dirs = {
-				//"E:/2013疾病研究/实验数据/神经退行性疾病/result/DTSPPIN_1_result",
-				"E:/2013疾病研究/实验数据/神经退行性疾病/result/DTSPPIN_2_result",
+				"E:/2013疾病研究/实验数据/神经退行性疾病/result/DTSPPIN_1_result",
+				//"E:/2013疾病研究/实验数据/神经退行性疾病/result/DTSPPIN_2_result",
 				};
 		try{
 			for(String dir : dirs){

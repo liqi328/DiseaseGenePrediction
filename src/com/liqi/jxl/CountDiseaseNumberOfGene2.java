@@ -6,26 +6,18 @@ import java.util.Map;
 import com.liqi.centrality.model.Centrality2;
 import com.liqi.geneutil.GeneIdMappingUtil;
 import com.liqi.model.Gene;
-import com.liqi.reader.OmimGeneDiseaseAssociationReader;
 import com.liqi.reader.ReaderFacade;
-import com.liqi.statistic.GeneDiseaseCountStatistic;
 
+public class CountDiseaseNumberOfGene2 {
 
-/* 计算每个基因对应的疾病数量
- * 疾病数量= 0的基因表示：正常基因;
- * 疾病数量> 0的基因表示：致病基因
- * 
- * */
-public class CountDiseasesNumberOfGene {
-	private static Map<String, Gene> hprdIdIndexedDiseaseGeneMap = null;
+	private static Map<String, Gene> symbolIndexedDiseaseGeneMap = null;
 	
 	public static void count(Map<String, Centrality2> centralityMap){
-		if(hprdIdIndexedDiseaseGeneMap == null){
+		if(symbolIndexedDiseaseGeneMap == null){
 			Map<String, Gene> omimIdIndexedDiseaseGeneMap = 
 					ReaderFacade.getInstance().getOmimDiseaseGeneMap();
 			
-			hprdIdIndexedDiseaseGeneMap = GeneIdMappingUtil.transform2HprdIdIndexedGeneMap(omimIdIndexedDiseaseGeneMap);
-			//System.out.println("2:" + hprdIdIndexedDiseaseGeneMap.size());
+			symbolIndexedDiseaseGeneMap = GeneIdMappingUtil.transform2SymbolIndexedGeneMap(omimIdIndexedDiseaseGeneMap);
 		}
 		count_0(centralityMap);
 	}
@@ -36,7 +28,7 @@ public class CountDiseasesNumberOfGene {
 		Gene gene = null;
 		while(itr.hasNext()){
 			centrality = itr.next();
-			gene = hprdIdIndexedDiseaseGeneMap.get(String.valueOf(Integer.parseInt(centrality.getValue("NAME").toString())));
+			gene = symbolIndexedDiseaseGeneMap.get(centrality.getValue("NAME").toString());
 			if(null == gene){
 				continue;
 			}

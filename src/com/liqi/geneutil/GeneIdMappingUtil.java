@@ -43,5 +43,56 @@ public class GeneIdMappingUtil {
 		}
 		return hprdIdIndexedDiseaseGeneMap;
 	}
+	
+	/* 将Omim_id索引的Gene Map装换成 symbol索引的Gene Map
+	 * */
+	public static Map<String, Gene> transform2SymbolIndexedGeneMap(Map<String, Gene> omimIdIdexedGeneMap){
+		
+		Map<String, Gene> symbolIndexedDiseaseGeneMap = new HashMap<String, Gene>();
+		
+		Iterator<Gene> itr = omimIdIdexedGeneMap.values().iterator();
+		
+		Gene gene = null;
+		String[] symbols = null;
+		while(itr.hasNext()){
+			gene = itr.next();
+			symbols = gene.getSymbols().split(",");
+			for(String sym: symbols){
+				symbolIndexedDiseaseGeneMap.put(sym.trim(), gene);
+			}
+		}
+		return symbolIndexedDiseaseGeneMap;
+	}
+	
+	
+	/*
+	 * Omim疾病基因列表中只有OmimId, 
+	 * 此方法设置Gene的HprdId和entrezId
+	 * 
+	 * 1：致病基因中有些OMIM未出现在HPRD_ID_MAPPING.txt中
+	 * 2：HPRD_ID_MAPPING.txt中的有些hprd_id没有对应的omim_id
+	 * 
+	 * */
+	public static void setOtherGeneId(Map<String, Gene> omimIdIdexedGeneMap){
+		Map<String, HprdIdMapping> omimIdIndexedIdMappingMap = HprdIdMappingUtil.getOmimIdIndexedIdMapping();
+		System.out.println("1 before: Disease Gene Map size=" + omimIdIdexedGeneMap.size());
+		Iterator<Map.Entry<String, Gene>> itr = omimIdIdexedGeneMap.entrySet().iterator();
+		Gene gene = null;
+		Map.Entry<String, Gene> entry = null;
+		HprdIdMapping hprdIdMapping = null;
+		while(itr.hasNext()){
+			entry = itr.next();
+			gene = entry.getValue();
+			hprdIdMapping = omimIdIndexedIdMappingMap.get(gene.getOmimId());
+			if(hprdIdMapping == null){
+				itr.remove();
+				System.out.println("Disease Gene:" + gene.getOmimId() +" not in the HPRD_ID_MAPPING.txt.");
+				continue;
+			}
+			gene.setEntrezId(hprdIdMapping.getEntrezGeneId());
+			gene.setHprdId(hprdIdMapping.getHrpdId());
+		}
+		System.out.println("2 after: Disease Gene Map size=" + omimIdIdexedGeneMap.size());
+	}
 
 }

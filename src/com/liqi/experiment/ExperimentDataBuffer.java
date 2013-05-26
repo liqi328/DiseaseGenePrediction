@@ -32,10 +32,12 @@ public class ExperimentDataBuffer {
 	 * String: hprdId
 	 * */
 	private Map<String, HprdIdMapping> hprdIdMappingMap = null;
+	
 	/* HPRD 数据库中的HPRD_ID_MAPPINGS.txt
 	 * String: omim_id
 	 * */
 	private Map<String, HprdIdMapping> omimIdMapppingMap = null;
+	
 	/* HPRD 数据库中的HPRD_ID_MAPPINGS.txt
 	 * String: entrez_gene_id
 	 * */

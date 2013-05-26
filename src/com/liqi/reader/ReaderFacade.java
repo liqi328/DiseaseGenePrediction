@@ -53,12 +53,20 @@ public class ReaderFacade {
 	
 	public Map<String, Gene> getOmimDiseaseGeneMap(){
 		String filename = "E:/2013疾病研究/疾病数据/OMIM/morbidmap";
+		return this.getOmimDiseaseGeneMap(filename);
+	} 
+	
+	public Map<String, Gene> getOmimDiseaseGeneMap(String filename){
 		readOmimGeneDiseaseAssociation(filename);
 		return omimIdIndexedDiseaseGeneMap;
-	} 
+	}
 	
 	public Map<String, Disease> getOmimDiseaseMap(){
 		String filename = "E:/2013疾病研究/疾病数据/OMIM/morbidmap";
+		return this.getOmimDiseaseMap(filename);
+	}
+	
+	public Map<String, Disease> getOmimDiseaseMap(String filename){
 		readOmimGeneDiseaseAssociation(filename);
 		return omimDiseaseMap;
 	}

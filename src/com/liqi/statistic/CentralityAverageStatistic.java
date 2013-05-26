@@ -11,7 +11,7 @@ public class CentralityAverageStatistic implements Statistic {
 	
 	private Map<String, Map<String, Double>> avgMap = null;
 	
-	private static final String[] keys = {
+	public static final String[] keys = {
 			"DiseaseGene",
 			"NormalGene",
 			"D/N"};
@@ -79,6 +79,10 @@ public class CentralityAverageStatistic implements Statistic {
 		for(int i = 2; i < header.length; ++i){
 			avg.put(header[i], avgMap.get(keys[0]).get(header[i]) / avgMap.get(keys[1]).get(header[i]));
 		}
+	}
+	
+	public Map<String, Map<String, Double>> getStatisticResultMap(){
+		return avgMap;
 	}
 
 	@Override

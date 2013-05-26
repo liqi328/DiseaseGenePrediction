@@ -115,6 +115,23 @@ public class Graph{
 		return vertices.get(node).size();
 	}
 	
+	public Set<Node> createNodesSet(){
+		Set<Node> nodeSet = new HashSet<Node>();
+		nodeSet = vertices.keySet();
+		return nodeSet;
+	}
+	
+	public Set<Edge> createEdgesSet(){
+		Set<Edge> edgeSet = new HashSet<Edge>(this.getNodesNumber() * 2);
+		Iterator<Map.Entry<Node, List<Edge>>> itr = vertices.entrySet().iterator();
+		Map.Entry<Node, List<Edge>> entry = null;
+		while(itr.hasNext()){
+			entry = itr.next();
+			edgeSet.addAll(entry.getValue());		
+		}
+		return edgeSet;
+	}
+	
 	public int getEdgesNumber(){
 //		Map.Entry<Node, List<Edge>> entry = null;
 //		Iterator<Map.Entry<Node, List<Edge>>> itr = vertices.entrySet().iterator();

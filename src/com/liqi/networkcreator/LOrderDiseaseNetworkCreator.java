@@ -13,14 +13,20 @@ import com.liqi.model.Gene;
  * 根据已知的致病基因，从PPI中提取L-阶致病基因子网(L为邻居的层数)
  * 
  * L-阶疾病网络，构建器
+ * 
+ * 
  * */
 public class LOrderDiseaseNetworkCreator implements NetworkCreator {
-	private Graph sourcePPI;
-	private Map<String, Gene> diseaseGeneMap;
+	//图中的节点名称为HprdId
+	protected Graph sourcePPI;
+	
+	/*String:
+	 * Gene:必须设置了HprdId */
+	protected Map<String, Gene> diseaseGeneMap;
 	
 	private Graph resultSubPpi;
 	
-	private Map<String, Node> nodes;
+	protected Map<String, Node> nodes;
 	
 	/* level 阶子网, 阶数*/
 	private int level = 0;
@@ -49,17 +55,23 @@ public class LOrderDiseaseNetworkCreator implements NetworkCreator {
 		
 		createSubPPI();		
 	}
+	
+	protected Node createNode(Gene gene){
+		Node node = new Node("" + Integer.parseInt(gene.getHprdId()));
+		return node;
+	}
 
 	
 	/* 初始化：将致病基因作为网络中的节点*/
-	private void initNodes(){
+	protected void initNodes(){
 		Iterator<Gene> itr = diseaseGeneMap.values().iterator();
 		Node node = null;
 		while(itr.hasNext()){
-			node = new Node("" + Integer.parseInt(itr.next().getHprdId()));
+			//node = new Node("" + Integer.parseInt(itr.next().getHprdId()));
+			node = createNode(itr.next());
 			nodes.put(node.getName(), node);
 		}
-		//System.out.println("Init nodes size = " + nodes.size());
+		System.out.println("Init nodes size = " + nodes.size());
 	}
 	
 	private void addNeighborsNode(){
@@ -96,16 +108,20 @@ public class LOrderDiseaseNetworkCreator implements NetworkCreator {
 		
 		Iterator<Node> itr = nodes.values().iterator();
 		Node node = null;
+		int count = 0;
 		while(itr.hasNext()){
 			node = itr.next();
-			addNeighborEdge(node);
+			count += addNeighborEdge(node);
 		}
+		System.out.println("未加入子网的节点数目：" + count);
 	}
 	
-	private void addNeighborEdge(Node fromNode){		
+	/* 若节点加入到子网中，返回0.
+	 * 未加入子网中，返回1 */
+	private int addNeighborEdge(Node fromNode){		
 		Iterator<Edge> edgeItr = sourcePPI.createNeighborsIterator(fromNode);
 		if(edgeItr == null){
-			return;
+			return 1;
 		}
 		
 		Edge e = null;
@@ -121,7 +137,7 @@ public class LOrderDiseaseNetworkCreator implements NetworkCreator {
 			if(toNode == null)continue;
 			resultSubPpi.addEdge(fromNode, toNode);
 		}
-		
+		return 0;
 	}
 
 }
