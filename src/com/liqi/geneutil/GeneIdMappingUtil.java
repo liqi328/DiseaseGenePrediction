@@ -87,6 +87,8 @@ public class GeneIdMappingUtil {
 			if(hprdIdMapping == null){
 				itr.remove();
 				System.out.println("Disease Gene:" + gene.getOmimId() +" not in the HPRD_ID_MAPPING.txt.");
+				gene.setHprdId("---null---");
+				gene.setEntrezId("---null---");
 				continue;
 			}
 			gene.setEntrezId(hprdIdMapping.getEntrezGeneId());
