@@ -12,6 +12,7 @@ public class DiseasePercentStatisticMain {
 		DiseasePercent2Excel reader = new DiseasePercent2Excel();
 		try {
 			reader.read(dir);
+			reader.test_write();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

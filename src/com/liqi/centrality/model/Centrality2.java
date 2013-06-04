@@ -41,7 +41,7 @@ public class Centrality2{
 	
 	
 	/* 降序-排序 ,以内部类的方式实现Centrality的比较器*/
-	public class CentralityComparator implements Comparator<Centrality2>{
+	public static class CentralityComparator implements Comparator<Centrality2>{
 		public CentralityComparator(String key) throws NullPointerException{
 			/* 此处应该确保 key 合法*/
 			this.sortKey = key.toUpperCase();
@@ -54,9 +54,9 @@ public class Centrality2{
 			
 			int i = -1;
 			if(first instanceof String){
-				i = ((String)first).compareTo((String)second);
+				i = ((String)second).compareTo((String)first);
 			}else{
-				i = ((Double)first).compareTo((Double)second);
+				i = ((Double)second).compareTo((Double)first);
 			}
 			
 			return i;
