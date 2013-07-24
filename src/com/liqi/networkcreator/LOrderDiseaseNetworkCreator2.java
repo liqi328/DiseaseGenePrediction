@@ -15,6 +15,9 @@ public class LOrderDiseaseNetworkCreator2 extends LOrderDiseaseNetworkCreator {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/*
+	 * 网络中的节点为基因名称
+	 * */
 	protected Node createNode(Gene gene){
 		String[] symbols = gene.getSymbols().split(",");
 		Node node = null;

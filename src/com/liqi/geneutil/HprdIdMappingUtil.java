@@ -14,6 +14,7 @@ public class HprdIdMappingUtil {
 	private static Map<String, HprdIdMapping> hprdIdIndexedIdMappingMap = null;
 	private static Map<String, HprdIdMapping> omimIdIndexedIdMappingMap = null;
 	private static Map<String, HprdIdMapping> entrezIdIndexIdMappingMap = null;
+	private static Map<String, HprdIdMapping> symbolIndexIdMappingMap = null;
 	
 	
 	public static Map<String, HprdIdMapping> getHprdIdIndexIdMapping(){
@@ -26,7 +27,7 @@ public class HprdIdMappingUtil {
 		return hprdIdIndexedIdMappingMap;
 	}
 	
-	public static  Map<String, HprdIdMapping> getOmimIdIndexedIdMapping(){
+	public static Map<String, HprdIdMapping> getOmimIdIndexedIdMapping(){
 		if(omimIdIndexedIdMappingMap == null){
 			getHprdIdIndexIdMapping();
 		}
@@ -34,7 +35,7 @@ public class HprdIdMappingUtil {
 		return omimIdIndexedIdMappingMap;
 	}
 	
-	public static  Map<String, HprdIdMapping> getEntrezIdIndexedIdMapping(){
+	public static Map<String, HprdIdMapping> getEntrezIdIndexedIdMapping(){
 		if(entrezIdIndexIdMappingMap == null){
 			getHprdIdIndexIdMapping();
 		}
@@ -42,15 +43,25 @@ public class HprdIdMappingUtil {
 		return entrezIdIndexIdMappingMap;
 	}
 	
+	public static Map<String, HprdIdMapping> getSymbolIdIndexedIdMapping(){
+		if(symbolIndexIdMappingMap == null){
+			getHprdIdIndexIdMapping();
+		}
+		
+		return symbolIndexIdMappingMap;
+	}
+	
 	private static  void initOtherIdMappingMap(){
 		omimIdIndexedIdMappingMap = new HashMap<String, HprdIdMapping>();
 		entrezIdIndexIdMappingMap = new HashMap<String, HprdIdMapping>();
+		symbolIndexIdMappingMap = new HashMap<String, HprdIdMapping>();
 		
 		Iterator<HprdIdMapping> itr = hprdIdIndexedIdMappingMap.values().iterator();
 		HprdIdMapping idMapping = null;
 		while(itr.hasNext()){
 			idMapping = itr.next();
 			addToOmimIndexedIdMappingMap(idMapping);
+			addToSymbolIndexedIdMappingMap(idMapping);
 			
 			entrezIdIndexIdMappingMap.put(idMapping.getEntrezGeneId(), idMapping);
 		}
@@ -62,6 +73,14 @@ public class HprdIdMappingUtil {
 			return;
 		}
 		omimIdIndexedIdMappingMap.put(omimId, idMapping);
+	}
+	
+	private static void addToSymbolIndexedIdMappingMap(HprdIdMapping idMapping){
+		String symbol = idMapping.getGeneSymbol();
+		if(null == symbol || symbol.equals("")|| symbol.equals("-")){
+			return;
+		}
+		symbolIndexIdMappingMap.put(symbol, idMapping);
 	}
 
 }

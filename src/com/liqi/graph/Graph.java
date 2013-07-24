@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.liqi.exception.NodeNonExistException;
@@ -200,7 +201,27 @@ public class Graph{
 			buf.append(edgeItr.next().toString()).append("\n");
 		}
 		
+		/* 输出孤立结点*/
+		buf.append(isolateNodesToString());
+		
 		return buf.toString();
+	}
+	
+	/**
+	 * 输出孤立结点
+	 * @return
+	 */
+	private String isolateNodesToString(){
+		StringBuffer sb = new StringBuffer();
+		Entry<Node, List<Edge>> entry = null;
+		Iterator<Entry<Node, List<Edge>>> itr = vertices.entrySet().iterator();
+		while(itr.hasNext()){
+			entry = itr.next();
+			if(entry.getValue().size() == 0){
+				sb.append(entry.getKey().toString()).append("\n");
+			}
+		}
+		return sb.toString();
 	}
 	
 	

@@ -4,12 +4,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.liqi.experiment.ExperimentDataBuffer;
 import com.liqi.graph.Edge;
 import com.liqi.graph.Graph;
 import com.liqi.graph.Node;
 import com.liqi.model.Gene;
+import com.liqi.proxy.ProxyFactory;
+import com.liqi.reader.GeneReader;
+import com.liqi.reader.ReaderFacade;
+import com.liqi.util.WriterUtil;
 
-/*
+/**
  * 根据已知的致病基因，从PPI中提取L-阶致病基因子网(L为邻居的层数)
  * 
  * L-阶疾病网络，构建器
@@ -138,6 +143,25 @@ public class LOrderDiseaseNetworkCreator implements NetworkCreator {
 			resultSubPpi.addEdge(fromNode, toNode);
 		}
 		return 0;
+	}
+	
+	public static void main(String[] args){
+		String ppiFilename = "E:/2013疾病研究/实验数据/神经退行性疾病/HPRD_ppi.txt";
+		String diseaseGeneFilename = "E:/MyCode/research/PrioritizingDiseaseCandidateGene/input/pd_input/pd_hprdid.txt";
+		
+		Graph ppi = ReaderFacade.getInstance().getPPI(ppiFilename);
+		GeneReader reader = new GeneReader(diseaseGeneFilename);
+		reader.read();
+		Map<String, Gene> geneMap = reader.getGeneMap();
+		
+		for(int i=0; i<=1;++i){
+			LOrderDiseaseNetworkCreator ldnCreator = (LOrderDiseaseNetworkCreator) ProxyFactory.getProgramRuntimeProxyInstance(LOrderDiseaseNetworkCreator.class,
+					new Class[]{Graph.class, Map.class, Integer.class}, new Object[]{ppi, geneMap, i});
+			ldnCreator.create();
+			Graph subPPI = ldnCreator.getResultPPI();
+			String outFilename = "E:/MyCode/research/PrioritizingDiseaseCandidateGene/input/pd_input/pd_"+ i + ".txt";
+			WriterUtil.write(outFilename, subPPI.edgesToString());
+		}	
 	}
 
 }

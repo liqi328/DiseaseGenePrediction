@@ -63,4 +63,15 @@ public class HprdIdMapping {
 		this.mainName = mainName;
 	}
 	
+	public String toString(){
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append(hrpdId).append("\t");
+		sb.append(omimId).append("\t");
+		sb.append(entrezGeneId).append("\t");
+		sb.append(geneSymbol);
+		
+		return sb.toString();
+	}
+	
 }
