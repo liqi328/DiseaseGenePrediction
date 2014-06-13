@@ -12,7 +12,7 @@ import com.liqi.model.Gene;
 import com.liqi.util.WriterUtil;
 
 
-/* 专门读取OMIM数据库中morbidmap文件
+/* 专门读取OMIM数据库中morbidmap文件,
  * morbidmap中的一行，表示基因与疾病的关系
  * 
  * For the file morbidmap, the fields are, in order:
@@ -103,7 +103,7 @@ public class OmimGeneDiseaseAssociationReader  extends AbstractModelReader {
 	}
 	
 	
-	public static void main(String[] args){
+	private static void test(){
 		OmimGeneDiseaseAssociationReader reader = new OmimGeneDiseaseAssociationReader(
 				"E:/2013疾病研究/疾病数据/OMIM/morbidmap");
 		reader.read();
@@ -118,6 +118,27 @@ public class OmimGeneDiseaseAssociationReader  extends AbstractModelReader {
 		}
 		
 		WriterUtil.write("E:/2013疾病研究/疾病数据/OMIM/morbidmap_gene.txt", sb.toString());
+	}
+	
+	private static void test2(){
+		OmimGeneDiseaseAssociationReader reader = new OmimGeneDiseaseAssociationReader(
+				"E:/2013疾病研究/疾病数据/OMIM/morbidmap");
+		reader.read();
+		Map<String, Disease> diseaseMap = reader.getOmimDiseaseMap();
+		System.out.println("size:" + diseaseMap.size());
+		
+		StringBuffer sb = new StringBuffer();
+		Iterator<Disease> itr = diseaseMap.values().iterator();
+		while(itr.hasNext()){
+			Disease d = itr.next();
+			sb.append(d.getName()).append("\n");
+		}
+		
+		WriterUtil.write("E:/2013疾病研究/疾病数据/OMIM/morbidmap_disease.txt", sb.toString());
+	}
+	
+	public static void main(String[] args){
+		test2();
 	}
 
 

@@ -91,6 +91,7 @@ public class DiseaseSpecificStatistic {
 					}
 				}
 			}
+			System.out.println(disease.getName() + "\t" + totalNum);
 			totalNum = totalNum == 0? 1: totalNum;
 			avg = avgMap.get(entry.getKey());
 			for(int i = 2; i < header.length; ++i){
